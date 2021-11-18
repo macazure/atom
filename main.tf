@@ -1,19 +1,18 @@
+#test
 provider "aws" {
 
     region = "eu-west-2"
     profile = "terraform"
 }
 
-resource "aws_s3_bucket" "macbucket" {
-  bucket = "joomla-pm"
+resource "aws_s3_bucket" "atomisesec-remote-state" {
+  bucket = "atomisesec-remote-state"
   acl    = "private"
 
-  tags = {
-    Name        = "joomla-pm"
-  }
+ 
 }
-  resource "aws_dynamodb_table" "jooml_locks" {
-  name         = "joomla-running-locks"
+  resource "aws_dynamodb_table" "terraform-state-locks" {
+  name         = "terraform-state-locks"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   
@@ -25,10 +24,10 @@ resource "aws_s3_bucket" "macbucket" {
 
   terraform {
   backend "s3" {
-    bucket         = "joomla-pm"
+    bucket         = "atomisesec-remote-state"
     key            = "global/s3/terraform.tfstate"
     region         = "eu-west-2"
-    dynamodb_table = "joomla-running-locks"
+    dynamodb_table = "terraform-state-locks"
     encrypt        = true
   }
 }
